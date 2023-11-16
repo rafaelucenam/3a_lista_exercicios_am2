@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Exercícios 3</title>
+
+    <link rel="stylesheet" href="">
+</head>
+
+<body>
+
+    <div>
+        <h2>Equipe</h2>
+        <p>Rafael Lucena Barbosa Moura</p>
+
+        <p id="observacao" style="color: gray;">OBS.: Professor, os integrantes da minha equipe não colaboraram com
+            nenhuma questão do trabalho, então acabei tendo que fazer a lista inteira sozinho. Espero que isso explique 
+            o porquê da lista estar incompleta e o motivo do nome dos meus companheiros de equipe não estarem aqui.</p>
+    </div>
+
+    <h1>3ª Lista de exercício</h1>
+
+    <ol>
+        <li>
+            <h3>Crie uma função chamada sortArrayStr(arr,typeSort), que receba, como parâmetro, um vetor de palavras
+                (arr) e a forma de ordenação (typeSort). A forma de ordenação pode ser Crescente (typeSort=1) ou
+                Decrescente
+                (typeSort=-1). O vetor deve ter no máximo 100 posições, caso contrário, a função retornará "null".
+                Caso o valor de typeSort seja diferente de um ou menos um, a função deve também retornar "null".
+                Caso os parâmetros estejam corretos, a função deve retornar a um vetor ordenado. (1 ponto)</h3>
+
+            <div>
+                <h3><i>Código</i></h3>
+
+                <pre style="border: #000 solid; color: grey;">
+                    function sortArrayStr(arr, typeSort) {
+                    if (arr.length > 100 || (typeSort !== 1 && typeSort !== -1)) {
+                        return null;
+                    }
+                
+                    const sortedArray = [...arr];
+                    sortedArray.sort((a, b) => (typeSort === 1 ? a.localeCompare(b) : b.localeCompare(a)));
+                
+                    return sortedArray;
+                }
+                
+                function sortArray() {
+                    const inputWords = document.getElementById("inputWords").value;
+                    const selectSortType = document.getElementById("selectSortType");
+                    const result = document.getElementById("result_1");
+                
+                    const words = inputWords.split(",").map(word => word.trim());
+                    const sortType = parseInt(selectSortType.value);
+                
+                    const sortedArray = sortArrayStr(words, sortType);
+                
+                    if (sortedArray !== null) {
+                        result.textContent = "Vetor Ordenado: " + sortedArray.join(", ");
+                    } else {
+                        result.textContent = "Parâmetros inválidos. Verifique o número de palavras e o tipo de ordenação.";
+                    }
+                }
+                </pre>
+            </div>
+
+            <div>
+                <h3><i>Ordenação de Vetor de Palavras</i></h3>
+                <p><i>Insira as palavras separadas por vírgula:</i></p>
+                <input type="text" id="inputWords">
+                <select id="selectSortType">
+                    <option value="1">Crescente</option>
+                    <option value="-1">Decrescente</option>
+                </select>
+                <button onclick="sortArray()">Ordenar</button>
+                <p id="result_1"></p>
+
+                <script src="./script/questao1.js"></script>
+            </div>
+        </li>
+
+        <li>
+            <h3></h3>
+
+            <div>
+
+            </div>
+        </li>
+
+        <li>
+            <h3>Faça uma função chamada filterPrimes(arr) que receba um vetor com elementos numéricos (a função deve
+                testar
+                essa condição e retornar valor que possa indicar que o vetor fornecido não é composto somente por
+                números)
+                e que retorna um vetor com o conjunto de valores primos encontrados. Caso não seja encontrado nenhum
+                valor
+                primo, a função deve retornar um valor nulo. (1 ponto)</h3>
+
+            <div>
+                <h3><i>Código</i></h3>
+
+                <pre style="border: #000 solid; color: grey;">
+                    
+                    function isPrime(num) {
+                        if (num <= 1) {
+                            return false;
+                        }
+                        for (let i = 2; i <= Math.sqrt(num); i++) {
+                            if (num % i === 0) {
+                                return false;
+                            }
+                        }
+                        return true;
+                    }
+                    
+                    function filterPrimes(arr) {
+                        const numbers = arr.split(',').map(Number);
+                        const primeNumbers = numbers.filter(num => isPrime(num));
+                        return primeNumbers.length > 0 ? primeNumbers : null;
+                    }
+                    
+                    function filterAndDisplayPrimes() {
+                        const input = document.getElementById('numberArray').value;
+                        const primeNumbersDiv = document.getElementById('primeNumbers');
+                    
+                        const primeResult = filterPrimes(input);
+                        if (primeResult !== null) {
+                            primeNumbersDiv.innerHTML = `&ltp&gtNúmeros Primos Encontrados: ${primeResult.join(', ')}&lt/p&gt`;
+                        } else {
+                            primeNumbersDiv.innerHTML = `&ltp&gtNenhum número primo encontrado no vetor.&lt/p&gt`;
+                        }
+                    }
+
+                </pre>
+            </div>
+
+            <div>
+                <h3><i>Encontrar Números Primos</i></h3>
+                <label for="numberArray"><i>Insira um vetor de números separados por vírgula:</i></label><br>
+                <input type="text" id="numberArray">
+                <button onclick="filterAndDisplayPrimes()">Encontrar Primos</button>
+
+                <div id="primeNumbers"></div>
+
+                <script src="./script/questao3.js"></script>
+            </div>
+        </li>
+
+        <li>
+            <h3>Faça uma função chamada listImages(url) que recebe como parâmetro uma URL para uma função remota
+                presente no endereço https://jsonplaceholder.typicode.com/photos. Ao receber os objetos relacionados
+                à chamada realizada, a função criada deve retornar um vetor com os objetos recebidos. Caso não receba
+                nenhum objeto, a função deve retornar "null". (1 ponto)</h3>
+
+            <div>
+                <h3><i>Código</i></h3>
+
+                <pre style="border: #000 solid; color: grey;">
+                    
+                    let isImageListVisible = true;
+
+                    async function listImages(url) {
+                        try {
+                            const response = await fetch(url);
+                            const data = await response.json();
+
+                            if (data.length > 0) {
+                                return data;
+                            } else {
+                                return null;
+                            }
+                        } catch (error) {
+                            console.error('Erro ao obter dados:', error);
+                            return null;
+                        }
+                    }
+
+                    function displayImages(images) {
+                        const imageListDiv = document.getElementById('imageList');
+                        imageListDiv.innerHTML = '';
+
+                        images.forEach(image => {
+                            const imageDiv = document.createElement('div');
+                            imageDiv.innerHTML = `&ltimg src="${image.thumbnailUrl}" alt="${image.title}"&gt`;
+                            imageListDiv.appendChild(imageDiv);
+                        });
+                    }
+
+                    async function toggleImageList() {
+                        const url = 'https://jsonplaceholder.typicode.com/photos';
+                        const images = await listImages(url);
+
+                        if (images !== null) {
+                            displayImages(images);
+                            isImageListVisible = !isImageListVisible;
+                            const imageListDiv = document.getElementById('imageList');
+                            imageListDiv.style.display = isImageListVisible ? 'block' : 'none';
+                        } else {
+                            console.log('Nenhuma imagem encontrada.');
+                        }
+                    }
+
+                    toggleImageList();
+
+                </pre>
+            </div>
+
+            <div>
+                <h3><i>Lista de Imagens</i></h3>
+                <button id="toggleButton" onclick="toggleImageList()">Minimizar/Expandir</button>
+                <div id="imageList"></div>
+
+                <script src="./script/questao4.js"></script>
+            </div>
+        </li>
+
+        <li>
+            <h3>
+
+            </h3>
+
+            <div>
+
+            </div>
+        </li>
+
+        <li>
+            <h3>Faça uma função chamada listPots(url), que recebe como parâmetro um URL para uma função remota que
+                retorna todos os comentários de armazenados em um servidor. A função retorna um Array de objetos com
+                os dados fornecidos ou, caso não seja retornado nada, ela retorna o valor especial "null". Depois,
+                faça uma aplicação web que acesse a função remota presente no endereço
+                https://jsonplaceholder.typicode.com/posts
+                e liste e pagine os dados recuperados. Use sua função para acessar os dados retornados pela função
+                remota.
+                Os dados retornados são "comentários de usuários", logo, você deve criar uma interface que permite ao
+                utilizador acessar esses dados de forma compreensível e agradável. (1 ponto)</h3>
+
+            <div>
+                <h3><i>Código</i></h3>
+
+                <pre style="border: #000 solid; color: grey;">
+                    
+                    function listPosts(url, page = 1, pageSize = 10) {
+                    const startIndex = (page - 1) * pageSize;
+                    const endIndex = startIndex + pageSize;
+                
+                    fetch(`${url}?_start=${startIndex}&_limit=${pageSize}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.length > 0) {
+                                displayComments(data);
+                                createPagination(page, pageSize);
+                            } else {
+                                document.getElementById('comentarios').innerHTML = 'Nenhum comentário encontrado.';
+                                document.getElementById('pagination').innerHTML = '';
+                            }
+                        })
+                        .catch(error => console.error('Erro ao obter dados:', error));
+                    }
+                
+                    function displayComments(comments) {
+                        const commentsDiv = document.getElementById('comentarios');
+                        commentsDiv.innerHTML = '';
+                    
+                        comments.forEach(comment => {
+                            const commentDiv = document.createElement('div');
+                            commentDiv.innerHTML = `&ltstrong&gt${comment.title}&lt/strong&gt&ltbr&gt${comment.body}&lthr&gt`;
+                            commentsDiv.appendChild(commentDiv);
+                        });
+                    }
+                    
+                    function createPagination(currentPage, pageSize) {
+                        fetch('https://jsonplaceholder.typicode.com/posts')
+                            .then(response => response.json())
+                            .then(data => {
+                                const totalPages = Math.ceil(data.length / pageSize);
+                    
+                                const paginationDiv = document.getElementById('pagination');
+                                paginationDiv.innerHTML = '';
+                    
+                                for (let i = 1; i <= totalPages; i++) {
+                                    const pageLink = document.createElement('a');
+                                    pageLink.href = '#';
+                                    pageLink.textContent = i;
+                    
+                                    if (i === currentPage) {
+                                        pageLink.className = 'active';
+                                    }
+                    
+                                    pageLink.addEventListener('click', function () {
+                                        listPosts('https://jsonplaceholder.typicode.com/posts', i, pageSize);
+                                    });
+                    
+                                    paginationDiv.appendChild(pageLink);
+                                }
+                            })
+                            .catch(error => console.error('Erro ao criar paginação:', error));
+                    }
+                    
+                    listPosts('https://jsonplaceholder.typicode.com/posts');
+                    
+                </pre>
+            </div>
+
+            <div>
+                <h3><i>Comentários de Usuários</i></h3>
+                <div id="comentarios"></div>
+                <div class="pagination" id="pagination"></div>
+
+                <script src="./script/questao6.js"></script>
+                <style>
+                    .pagination {
+                        display: inline-block;
+                        margin: 10px 0;
+                    }
+
+                    .pagination a {
+                        color: black;
+                        float: left;
+                        padding: 8px 16px;
+                        text-decoration: none;
+                        transition: background-color .3s;
+                    }
+
+                    .pagination a.active {
+                        background-color: #4CAF50;
+                        color: white;
+                    }
+
+                    .pagination a:hover:not(.active) {
+                        background-color: #ddd;
+                    }
+                </style>
+            </div>
+        </li>
+
+        <li>
+            <h3></h3>
+
+            <div>
+            </div>
+        </li>
+
+        <li>
+            <h3></h3>
+
+            <div>
+
+            </div>
+        </li>
+
+        <li>
+            <h3>Faça uma função que possa receber um número inteiro entre 0 e 1.000.000 e retorne como se fala em
+                português este número. (1 ponto)</h3>
+
+            <div>
+                <h3><i>Código</i></h3>
+
+                <pre style="border: #000 solid; color: grey;">
+                    
+                    function numeroEmPalavras(numero) {
+                    const unidades = ['', 'um', 'dois', 'três', 'quatro', 'cinco', 'seis', 'sete', 'oito', 'nove'];
+                    const especiais = ['', 'onze', 'doze', 'treze', 'catorze', 'quinze', 'dezesseis', 'dezessete', 'dezoito', 'dezenove'];
+                    const dezenas = ['', 'dez', 'vinte', 'trinta', 'quarenta', 'cinquenta', 'sessenta', 'setenta', 'oitenta', 'noventa'];
+                    const centenas = ['', 'cem', 'duzentos', 'trezentos', 'quatrocentos', 'quinhentos', 'seiscentos', 'setecentos', 'oitocentos', 'novecentos'];
+                
+                    if (numero === 0) {
+                        return 'zero';
+                    }
+                
+                    if (numero < 0 || numero > 1000000) {
+                        return 'Número fora da faixa válida';
+                    }
+                
+                    let resultado = '';
+                
+                    // Milhões
+                    if (Math.floor(numero / 1000000) > 0) {
+                        resultado += numeroEmPalavras(Math.floor(numero / 1000000)) + ' milhão ';
+                        numero %= 1000000;
+                    }
+                
+                    // Milhares
+                    if (Math.floor(numero / 1000) > 0) {
+                        const milhares = Math.floor(numero / 1000);
+                        resultado += milhares === 1 ? 'mil ' : numeroEmPalavras(milhares) + ' mil ';
+                        if (numero % 1000 !== 0) {
+                            resultado += ' e ';
+                        }
+                        numero %= 1000;
+                    }
+                
+                    // Centenas
+                    if (numero > 99) {
+                        if (numero === 100) {
+                            resultado += 'cem ';
+                        } else if (100 < numero && numero < 200) {
+                            resultado += 'cento e ';
+                        } else {
+                            resultado += centenas[Math.floor(numero / 100)];
+                            if (numero % 10 !== 0) {
+                                resultado += ' e ';
+                            }
+                        }
+                        numero %= 100;
+                    }
+                
+                    // Dezenas e unidades
+                    if (numero > 0) {
+                        if (numero === 10) {
+                            resultado += 'dez ';
+                        } else if (numero < 10) {
+                            resultado += unidades[numero];
+                        } else if (numero < 20) {
+                            resultado += especiais[numero - 10];
+                        } else {
+                            resultado += dezenas[Math.floor(numero / 10)];
+                            if (numero % 10 !== 0) {
+                                resultado += ' e ' + unidades[numero % 10];
+                            }
+                        }
+                    }
+                
+                    return resultado.trim();
+                }
+                
+                function converterNumero() {
+                    const inputNumero = document.getElementById('inputNumero').value;
+                    const resultado = document.getElementById('result_9');
+                
+                    if (inputNumero.trim() === '' || isNaN(inputNumero)) {
+                        resultado.textContent = 'Por favor, insira um número válido.';
+                    } else {
+                        const numero = parseInt(inputNumero, 10);
+                        resultado.textContent = numeroEmPalavras(numero);
+                    }
+                }
+                
+                </pre>
+            </div>
+
+            <div>
+                <h3><i>Conversor de Números em Palavras</i></h3>
+                <label for="inputNumero"><i>Insira um número entre 0 e 1.000.000 (não coloque pontos): </i></label>
+                <input type="text" id="inputNumero" />
+                <button onclick="converterNumero()">Converter</button>
+                <p id="result_9"></p>
+
+                <script src="./script/questao9.js"></script>
+            </div>
+        </li>
+
+        <li>
+            <h3>Faça um programa que consiga percorrer o labirinto e encontrar a saída, sabendo que a grade onde ele
+                foi criado é de 11x11. IMPORTANTE: a posição onde fica a entrada seria representada, em termos de
+                vetores, por labirinto[0][1]="E"; e a saída é dada por labirinto[11][10]="S". O vetor tem índice
+                iniciando em zero. E a representação "[n][m]" serve para definir que esse vetor é bidimensional, ou
+                seja,
+                uma matriz nxm posições de memória. (1 ponto)</h3>
+
+            <div>
+                <h3><i>Código</i></h3>
+
+                <pre style="border: #000 solid; color: grey;">
+                    const labirinto = [
+                    ["M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M"],
+                    ["E", "C", "C", "C", "C", "C", "C", "C", "C", "C", "M"],
+                    ["M", "C", "M", "M", "M", "C", "M", "M", "M", "C", "M"],
+                    ["M", "C", "M", "C", "M", "C", "M", "C", "C", "C", "M"],
+                    ["M", "C", "M", "C", "M", "C", "M", "C", "M", "M", "M"],
+                    ["M", "C", "C", "C", "C", "C", "M", "C", "C", "C", "M"],
+                    ["M", "M", "M", "C", "M", "C", "M", "C", "M", "M", "M"],
+                    ["M", "C", "C", "C", "M", "C", "M", "C", "C", "C", "M"],
+                    ["M", "C", "M", "M", "M", "C", "M", "C", "M", "C", "M"],
+                    ["M", "C", "C", "C", "C", "C", "C", "C", "M", "C", "S"],
+                    ["M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M"]
+                    ];
+                    
+                    function exibirLabirinto() {
+                        const table = document.getElementById("labirinto");
+                        table.innerHTML = "";
+                    
+                        for (let i = 0; i < labirinto.length; i++) {
+                            const row = document.createElement("tr");
+                            for (let j = 0; j < labirinto[i].length; j++) {
+                                const cell = document.createElement("td");
+                                cell.textContent = labirinto[i][j];
+                    
+                                switch (labirinto[i][j]) {
+                                    case "E":
+                                        cell.className = "start";
+                                        break;
+                                    case "S":
+                                        cell.className = "end";
+                                        break;
+                                    case "M":
+                                        cell.className = "wall";
+                                        break;
+                                    case "C":
+                                        cell.className = "path";
+                                        break;
+                                }
+                    
+                                row.appendChild(cell);
+                            }
+                            table.appendChild(row);
+                        }
+                    }
+                    
+                    function resolverLabirinto() {
+                        const start = encontrarPosicao("E");
+                        const end = encontrarPosicao("S");
+                    
+                        if (!start || !end) {
+                            alert("Labirinto inválido. Certifique-se de que há uma entrada (E) e uma saída (S).");
+                            return;
+                        }
+                    
+                        const caminhoEncontrado = percorrerLabirinto(start[0], start[1], end);
+                    
+                        if (caminhoEncontrado) {
+                            exibirLabirinto();
+                            alert("Labirinto resolvido! Caminho encontrado da entrada para a saída.");
+                        } else {
+                            alert("Não foi possível encontrar um caminho da entrada para a saída.");
+                        }
+                    }
+                    
+                    function encontrarPosicao(valor) {
+                        for (let i = 0; i < labirinto.length; i++) {
+                            for (let j = 0; j < labirinto[i].length; j++) {
+                                if (labirinto[i][j] === valor) {
+                                    return [i, j];
+                                }
+                            }
+                        }
+                        return null;
+                    }
+                    
+                    function percorrerLabirinto(i, j, end) {
+                        if (i < 0 || i >= labirinto.length || j < 0 || j >= labirinto[i].length || labirinto[i][j] === "M") {
+                            return false;
+                        }
+                    
+                        if (labirinto[i][j] === "S") {
+                            return true;
+                        }
+                    
+                        if (labirinto[i][j] === "C" || labirinto[i][j] === "E") {
+                            labirinto[i][j] = "X";
+                    
+                            if (
+                                percorrerLabirinto(i - 1, j, end) ||
+                                percorrerLabirinto(i + 1, j, end) ||
+                                percorrerLabirinto(i, j - 1, end) ||
+                                percorrerLabirinto(i, j + 1, end)
+                            ) {
+                                return true;
+                            }
+                    
+                            labirinto[i][j] = "C";
+                        }
+                    
+                        return false;
+                    }
+                    
+                    exibirLabirinto();
+                
+                </pre>
+            </div>
+
+            <div>
+                <h3><i>Labirinto</i></h3>
+                <table id="labirinto"></table>
+                <button onclick="resolverLabirinto()">Resolver Labirinto</button>
+
+                <script src="./script/questao10.js"></script>
+                <style>
+                    table {
+                        margin: 20px auto;
+                        border-collapse: collapse;
+                    }
+
+                    td {
+                        width: 20px;
+                        height: 20px;
+                        border: 1px solid #000;
+                    }
+
+                    .path {
+                        background-color: #aaffaa;
+                    }
+
+                    .wall {
+                        background-color: #000;
+                    }
+
+                    .start {
+                        background-color: #ffcc00;
+                    }
+
+                    .end {
+                        background-color: #ff0000;
+                    }
+                </style>
+            </div>
+        </li>
+    </ol>
+</body>
+
+</html>
